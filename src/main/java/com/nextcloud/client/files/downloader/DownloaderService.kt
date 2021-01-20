@@ -26,9 +26,12 @@ import android.os.IBinder
 import com.nextcloud.client.account.User
 import com.nextcloud.client.core.AsyncRunner
 import com.nextcloud.client.core.LocalBinder
+import com.nextcloud.client.device.PowerManagementService
 import com.nextcloud.client.logger.Logger
 import com.nextcloud.client.network.ClientFactory
+import com.nextcloud.client.network.ConnectivityService
 import com.nextcloud.client.notifications.AppNotificationManager
+import com.owncloud.android.datamodel.UploadsStorageManager
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 import javax.inject.Named
@@ -77,6 +80,15 @@ class DownloaderService : Service() {
     @Inject
     lateinit var logger: Logger
 
+    @Inject
+    lateinit var uploadsStorageManager: UploadsStorageManager
+
+    @Inject
+    lateinit var connectivityService: ConnectivityService
+
+    @Inject
+    lateinit var powerManagementService: PowerManagementService
+
     val isRunning: Boolean get() = downloaders.any { it.value.isRunning }
 
     private val downloaders: MutableMap<String, TransferManagerImpl> = mutableMapOf()
@@ -98,10 +110,12 @@ class DownloaderService : Service() {
         }
 
         val request = intent.getParcelableExtra(EXTRA_REQUEST) as Request
-        val downloader = getDownloader(request.user)
+        val downloader = getTransferManager(request.user)
         downloader.enqueue(request)
 
-        logger.d(TAG, "Enqueued new download: ${request.uuid} ${request.file.remotePath}")
+        if (request is DownloadRequest) {
+            logger.d(TAG, "Enqueued new download: ${request.uuid} ${request.file.remotePath}")
+        }
 
         return START_NOT_STICKY
     }
@@ -109,7 +123,7 @@ class DownloaderService : Service() {
     override fun onBind(intent: Intent?): IBinder? {
         val user = intent?.getParcelableExtra<User>(EXTRA_USER)
         if (user != null) {
-            return Binder(getDownloader(user), this)
+            return Binder(getTransferManager(user), this)
         } else {
             return null
         }
@@ -136,7 +150,7 @@ class DownloaderService : Service() {
         logger.d(TAG, "Stopping downloader service")
     }
 
-    private fun getDownloader(user: User): TransferManagerImpl {
+    private fun getTransferManager(user: User): TransferManagerImpl {
         val existingDownloader = downloaders[user.accountName]
         return if (existingDownloader != null) {
             existingDownloader
@@ -146,7 +160,15 @@ class DownloaderService : Service() {
                 { clientFactory.create(user) },
                 contentResolver
             )
-            val newDownloader = TransferManagerImpl(runner, downloadTaskFactory)
+            val uploadTaskFactory = UploadTask.Factory(
+                applicationContext,
+                uploadsStorageManager,
+                connectivityService,
+                powerManagementService,
+                { clientFactory.create(user) },
+                contentResolver
+            )
+            val newDownloader = TransferManagerImpl(runner, downloadTaskFactory, uploadTaskFactory)
             newDownloader.registerTransferListener(this::onDownloadUpdate)
             downloaders[user.accountName] = newDownloader
             newDownloader
