@@ -1,6 +1,7 @@
 # [Nextcloud](https://nextcloud.com) Android app :iphone:
 
 [![Build Status](https://drone.nextcloud.com/api/badges/nextcloud/android/status.svg)](https://drone.nextcloud.com/nextcloud/android) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/80401cb343854343b4d94acbfb72d3ec)](https://www.codacy.com/app/Nextcloud/android?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nextcloud/android&amp;utm_campaign=Badge_Grade) [![Releases](https://img.shields.io/github/release/nextcloud/android.svg)](https://github.com/nextcloud/android/releases/latest) [![irc](https://img.shields.io/badge/IRC-%23nextcloud--mobile%20on%20freenode-blue.svg)](https://webchat.freenode.net/?channels=nextcloud-mobile)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FAndyScherzinger%2Fandroid.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FAndyScherzinger%2Fandroid?ref=badge_shield)
 
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" 
       alt="Download from Google Play" 
@@ -36,6 +37,9 @@ Please read the [Code of Conduct](https://nextcloud.com/community/code-of-conduc
 Please review the [guidelines for contributing](https://github.com/nextcloud/android/blob/master/CONTRIBUTING.md) to this repository.
 
 More information how to contribute: [https://nextcloud.com/contribute/](https://nextcloud.com/contribute/)
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FAndyScherzinger%2Fandroid.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FAndyScherzinger%2Fandroid?ref=badge_large)
 
 ## Start contributing :hammer_and_wrench:
 Make sure you read [SETUP.md](https://github.com/nextcloud/android/blob/master/SETUP.md) and [CONTRIBUTING.md](https://github.com/nextcloud/android/blob/master/CONTRIBUTING.md) before you start working on this project. But basically: fork this repository and contribute back using pull requests to the master branch.
